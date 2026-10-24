@@ -1,0 +1,17 @@
+
+# Visual Studio files
+.vs/
+**/.vs/
+
+# .NET build output
+**/bin/
+**/obj/
+
+# User-specific files
+*.user
+*.suo
+
+# Secrets and local configuration
+.env
+appsettings.Development.json
+appsettings.json
