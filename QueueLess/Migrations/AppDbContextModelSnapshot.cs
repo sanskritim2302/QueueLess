@@ -60,10 +60,17 @@ namespace QueueLess.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CustomerName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("QueueId")
                         .HasColumnType("int");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
 
                     b.Property<DateTime?>("ServedAt")
                         .HasColumnType("datetime2");
@@ -76,7 +83,12 @@ namespace QueueLess.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("QueueId");
+                    b.HasIndex("QueueId")
+                        .IsUnique()
+                        .HasFilter("[Status] = 1");
+
+                    b.HasIndex("QueueId", "TicketNumber")
+                        .IsUnique();
 
                     b.ToTable("Tickets");
                 });
@@ -86,7 +98,7 @@ namespace QueueLess.Migrations
                     b.HasOne("QueueLess.Entities.Queue", "Queue")
                         .WithMany()
                         .HasForeignKey("QueueId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Queue");
